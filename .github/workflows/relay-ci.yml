@@ -28,7 +28,7 @@ jobs:
       - run: python3 tools/package.py
       - uses: actions/upload-artifact@v4
         with:
-          name: novel-relay-rc1-package
+          name: novel-relay-rc2-source
           path: dist/
   browser-fixtures:
     runs-on: ubuntu-latest

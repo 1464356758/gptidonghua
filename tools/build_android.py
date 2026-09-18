@@ -13,7 +13,7 @@ shutil.copyfile(R/'portable/手机匹配文件生成器.html',assets/'index.html
 (assets/'manual.html').write_text((R/'portable/整合系统说明书与操作教程.html').read_text('utf-8').replace('href="手机匹配文件生成器.html"','href="index.html"'),'utf-8')
 classes=out/'classes';classes.mkdir(exist_ok=True);gen=out/'gen';gen.mkdir(exist_ok=True)
 run(bt/'aapt','package','-f','-M',R/'android/AndroidManifest.xml','-S',R/'android/res','-A',assets,'-I',platform,'-J',gen,'-F',out/'resources.apk')
-run('javac','-encoding','UTF-8','-source','8','-target','8','-bootclasspath',platform,'-d',classes,*sorted((R/'android/src').rglob('*.java')),*sorted(gen.rglob('*.java')))
+run('javac','-encoding','UTF-8','--release','8','-classpath',platform,'-d',classes,*sorted((R/'android/src').rglob('*.java')),*sorted(gen.rglob('*.java')))
 run(bt/'d8','--lib',platform,'--min-api','26','--output',out,*sorted(classes.rglob('*.class')))
 shutil.copyfile(out/'resources.apk',out/'unaligned.apk')
 with zipfile.ZipFile(out/'unaligned.apk','a',zipfile.ZIP_DEFLATED) as z:z.write(out/'classes.dex','classes.dex')

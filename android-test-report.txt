@@ -1,0 +1,2 @@
+Android integration checks passed: 15
+No real ChatGPT account tested. SAF save, cancellation and exact ZIP receipt in a separate-UID test app verified. Personal-device third-party share targets still require acceptance.

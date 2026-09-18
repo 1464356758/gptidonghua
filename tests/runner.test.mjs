@@ -64,3 +64,15 @@ test('一本书配置错误只阻断本书，另外两本仍能执行',async()=>
   const f=await setup('IDEA',3),db=JSON.parse(f.api.files['owner/book1']['数据库入口.json']);db.branch='wrong';f.api.commit('owner/book1',{...f.api.files['owner/book1'],'数据库入口.json':encode(db)});
   await f.make().tick();assert.equal(f.sent.length,2);const s=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);assert(s.books[0].held);assert.equal(s.books[1].held,null);
 });
+test('检查过程中收到暂停，在下一次浏览器点击前停止发送',async()=>{
+  const f=await setup('WRITERS',1);let stop=false;const send=f.transport.send;
+  f.transport.pauseRequested=async()=>stop;
+  f.transport.send=async(...args)=>{const r=await send(...args);stop=true;return r;};
+  await f.make().tick();const s=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);assert.equal(f.sent.length,1);assert.equal(s.paused,true);assert.equal(activeCount(s),3);
+});
+test('暂停期间未发送的预留任务，过夜不会被当成执行超时锁死',async()=>{
+  const f=await setup('WRITERS',1);let stop=false;f.transport.pauseRequested=async()=>stop;const old=f.transport.send;
+  f.transport.send=async(...args)=>{const out=await old(...args);stop=true;return out;};await f.make().tick();
+  const s=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);for(const j of Object.values(s.jobs))j.reserved_at=Date.now()-86400000;
+  f.api.commit('owner/control',{[CONTROL_PATH]:encode(s)});await f.make().tick();const after=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);assert.equal(after.books[0].held,null);assert.equal(activeCount(after),3);
+});

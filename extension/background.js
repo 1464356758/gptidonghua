@@ -4,7 +4,7 @@ import {CONTROL_PATH,repoName,assert,uid,chatURL,copy,ROLES} from './core/protoc
 import {addBook,selectIdea,event,activeCount} from './core/engine.mjs';
 import {generate} from './core/generator.mjs';
 
-let queue=Promise.resolve();
+let queue=Promise.resolve(),immediatePause=false;
 function serial(fn){const p=queue.then(fn,fn);queue=p.catch(()=>{});return p;}
 const defaultSettings={repo:'1464356758/gptidonghua',branch:'main'};
 const transport={
@@ -23,6 +23,7 @@ const transport={
   async refresh(url){const t=await this.tab(url,false);if(t)await chrome.tabs.reload(t.id);},
   async cache(s){await chrome.storage.local.set({lastState:s,lastSync:Date.now(),lastError:null});}
   ,async bindings(){return (await chrome.storage.local.get('chatBindings')).chatBindings||{};}
+  ,async pauseRequested(){return immediatePause||!!(await chrome.storage.local.get('pauseRequested')).pauseRequested;}
 };
 async function settings(){return {...defaultSettings,...(await chrome.storage.local.get('settings')).settings};}
 async function runner(){
@@ -83,7 +84,7 @@ async function command(m){
     await chrome.storage.local.set({chatBindings:bindings});
   });
   if(m.type==='pause')return await mutate(async r=>{r.s.paused=true;r.s.pause_reason='用户暂停；在途任务继续核对';});
-  if(m.type==='resume')return await mutate(async r=>{r.s.paused=false;r.s.pause_reason='';await chrome.storage.local.set({retryAt:0});});
+  if(m.type==='resume')return await mutate(async r=>{r.s.paused=false;r.s.pause_reason='';await chrome.storage.local.set({retryAt:0,pauseRequested:false});immediatePause=false;});
   if(m.type==='select')return await mutate(async r=>{const b=r.s.books.find(x=>x.config.id===m.book);assert(b,'未找到小说');selectIdea(r.s,b,m.candidate);});
   if(m.type==='recheck')return await mutate(async r=>{const b=r.s.books.find(x=>x.config.id===m.book);assert(b,'未找到小说');b.held=null;event(r.s,`${b.config.id} 用户要求重新核验`);});
   if(m.type==='retry_unsent')return await mutate(async r=>{
@@ -103,5 +104,7 @@ chrome.action.onClicked.addListener(()=>chrome.tabs.create({url:chrome.runtime.g
 chrome.runtime.onMessage.addListener((m,sender,respond)=>{
   // 页面内容脚本不能调用配置、令牌或控制台写操作。
   if(sender.id!==chrome.runtime.id||!sender.url?.startsWith(chrome.runtime.getURL('dashboard.html')))return;
+  // 先记录停止意图，让进行中的检查在下一次点击发送前看到；随后顺序保存远端状态。
+  if(m.type==='pause'){immediatePause=true;chrome.storage.local.set({pauseRequested:true});}
   serial(()=>command(m)).then(value=>respond({ok:true,value}),e=>respond({ok:false,error:e.message}));return true;
 });

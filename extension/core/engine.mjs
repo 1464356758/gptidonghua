@@ -46,6 +46,7 @@ export function reserve(s,b,now=Date.now()) {
 export function markAccepted(s,j,result,commit) {
   assert(['RESERVED','SENT','UNCERTAIN'].includes(j.status),'此任务不接受完成凭证');
   j.status='ACCEPTED';j.result=copy(result);j.artifact_commit=commit;j.accepted_at=Date.now();
+  delete j.wait_reason;
   // 业务完成与浏览器席位释放为两个事件。
   event(s,`${j.book_id} ${j.role} 凭证核验完成`);
 }

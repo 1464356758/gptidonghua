@@ -37,7 +37,7 @@ export class Runner {
         if(['RESERVED','SENT','UNCERTAIN'].includes(j.status)&&j.published_commit){
           try{
             const v=await verifyReceipt(this.api,b,j,heads[b.config.id]);
-            if(v)markAccepted(this.s,j,v.result,v.commit);
+            if(v){markAccepted(this.s,j,v.result,v.commit);if(b.held?.startsWith('任务超过2小时'))b.held=null;}
           }catch(e){
             if(e instanceof Pending){j.wait_reason=e.message;}
             else if([401,403,429].includes(e.status))throw e;
@@ -55,7 +55,7 @@ export class Runner {
           else if(p.status==='BUSY'&&Date.now()-j.accepted_at>120000&&!j.refreshed_at){
             await this.transport.refresh(b.config.chats[j.role]);j.refreshed_at=Date.now();event(this.s,`${j.id} 已验凭证后刷新一次显示`);
           }
-        }else if(j.reserved_at&&Date.now()-j.reserved_at>7200000){b.held='任务超过2小时仍无有效完成凭证；保持席位，等待检查';}
+        }else if(['SENT','UNCERTAIN'].includes(j.status)&&!this.s.paused&&j.reserved_at&&Date.now()-j.reserved_at>7200000){b.held='任务超过2小时仍无有效完成凭证；保持席位，等待检查';}
       }
     }
     for(const bookId of this.s.books.map(b=>b.config.id)){
@@ -71,6 +71,7 @@ export class Runner {
       }catch(e){b.held=e.message;event(this.s,`${b.config.id} 路由阻断：${e.message}`);}
     }
     this.prune();await this.save();
+    if(await this.transport.pauseRequested?.()){this.s.paused=true;this.s.pause_reason='用户要求暂停新发送';await this.save();}
     if(this.s.paused)return;
     // 先恢复已经预留但确认尚未尝试发送的任务。
     for(const b of this.s.books){if(b.held||!b.group)continue;await this.sendReserved(b);if(this.s.paused)return;}
@@ -124,6 +125,7 @@ export class Runner {
     if(!b.group)return;
     for(const id of b.group.jobs){
       const j=this.s.jobs[id];if(j.status!=='RESERVED')continue;
+      if(await this.transport.pauseRequested?.()){this.s.paused=true;this.s.pause_reason='用户要求暂停新发送';await this.save();return;}
       assert(j.published_commit,'任务尚未写入GitHub');
       // 尽量减小租约过期后旧实例继续发的窗口；多实例CAS冲突即停止。
       assert(this.s.lease.owner===this.runnerId&&this.s.lease.expires>Date.now()+10000,'执行租约即将过期，下轮重新续约');

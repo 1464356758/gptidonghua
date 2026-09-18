@@ -53,19 +53,21 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          target: google_apis
+          api-level: 34
+          target: default
           arch: x86_64
           profile: pixel_6
           disable-animations: true
           script: |
+            adb shell settings put secure show_ime_with_hard_keyboard 0
             adb install build/android/ci-app.apk
             adb install build/android/ci-test.apk
             adb shell am instrument -w cn.novelrelay.matcher.test/cn.novelrelay.matcher.Checks > build/android/instrumentation.log
             cat build/android/instrumentation.log
             mkdir -p build/android-evidence
             adb pull /sdcard/Android/data/cn.novelrelay.matcher/files/. build/android-evidence/
-            grep 'Android integration checks passed: 10' build/android/instrumentation.log
+            adb pull /sdcard/Download/book01_小说匹配文件_AUTO_RC2.zip build/android-evidence/android-saved-download.zip
+            grep 'Android integration checks passed: 13' build/android/instrumentation.log
       - name: Publish unsigned output and evidence
         if: always()
         run: python3 tools/publish_build_evidence.py

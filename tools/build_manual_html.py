@@ -5,7 +5,7 @@ import html,re
 R=Path(__file__).resolve().parents[1]
 def inline(s):
     s=html.escape(s)
-    s=re.sub(r'https://[^\s&lt;&gt;]+',lambda m:'<a href="'+m.group()+'">'+m.group()+'</a>',s)
+    s=re.sub(r'https://(?:github\.com|developer\.android\.com)/[A-Za-z0-9_./%\-]+',lambda m:'<a href="'+m.group()+'">'+m.group()+'</a>',s)
     return s
 lines=(R/'docs/06_整合系统说明书与操作教程.md').read_text('utf-8').splitlines();out=[];i=0
 while i<len(lines):

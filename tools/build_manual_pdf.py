@@ -25,7 +25,7 @@ styles={
 'subtitle':ParagraphStyle('Subtitle',fontName='Manual',fontSize=22,leading=32,textColor=GREEN,spaceAfter=20,wordWrap='CJK')}
 def inline(s):
  s=html.escape(s)
- return re.sub(r'https://[^\s&lt;&gt;]+',lambda m:'<link href="'+m.group()+'" color="#16654E">'+m.group()+'</link>',s)
+ return re.sub(r'https://(?:github\.com|developer\.android\.com)/[A-Za-z0-9_./%\-]+',lambda m:'<link href="'+m.group()+'" color="#16654E">'+m.group()+'</link>',s)
 def p(s,style='body'):return Paragraph(inline(s),styles[style])
 class CoverMap(Flowable):
  def __init__(self):Flowable.__init__(self);self.width=WIDTH;self.height=126
@@ -40,7 +40,7 @@ class GuideDoc(SimpleDocTemplate):
    title=flowable.getPlainText();key='section-'+str(self.page);self.canv.bookmarkPage(key);self.canv.addOutlineEntry(title,key,0,False)
 def page(c,doc):
  c.saveState();c.setStrokeColor(LINE);c.line(44,42,W-44,42);c.setFont('Manual',8);c.setFillColor(GRAY);c.drawString(44,27,'小说自动接力系统  /  操作教程 RC2');c.drawRightString(W-44,27,str(doc.page))
- if doc.page>1:c.drawString(44,H-29,'安卓生成器 + GitHub + 电脑控制台');c.setStrokeColor(LINE);c.line(44,H-36,W-44,H-36)
+ if doc.page>1:c.drawString(44,H-29,'安卓生成器 / GitHub / 电脑控制台');c.setStrokeColor(LINE);c.line(44,H-36,W-44,H-36)
  c.restoreState()
 source=(R/'docs/06_整合系统说明书与操作教程.md').read_text('utf-8');lines=source.splitlines();story=[]
 story += [Spacer(1,50),p('NOVEL RELAY / 使用指南','small'),p('小说自动接力系统','cover'),p('整合说明书\n与操作教程'.replace('\n',' '),'subtitle'),p('从手机生成匹配包，到电脑接上十角色创作。学堂地址可以自行更换，三本小说各自推进。'),Spacer(1,16),CoverMap(),Spacer(1,20)]

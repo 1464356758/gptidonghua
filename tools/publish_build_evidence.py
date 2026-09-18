@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Publish non-secret build outputs on an isolated, unique evidence branch."""
 from pathlib import Path
-import subprocess,os,json,hashlib
+import subprocess,os,json,hashlib,base64
 R=Path(__file__).resolve().parents[1]
 files={}
 for name in ['unsigned.apk','apksigner.jar','manual-font.ttf','font-license.txt']:
@@ -11,6 +11,9 @@ for directory in ['build/android-evidence','test-results']:
  for p in (R/directory).glob('*'):
   if p.is_file() and p.suffix in ['.png','.zip','.txt']:files[p.name]=p
 assert 'unsigned.apk' in files and 'apksigner.jar' in files
+raw=files['apksigner.jar'].read_bytes()
+for index,start in enumerate(range(0,len(raw),512000)):
+ p=R/'build/android'/f'apksigner.part{index+1:02d}.b64';p.write_text(base64.b64encode(raw[start:start+512000]).decode());files[p.name]=p
 manifest={'source_commit':os.environ['GITHUB_SHA'],'files':[]}
 lines=[]
 for name,p in sorted(files.items()):

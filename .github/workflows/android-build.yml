@@ -67,7 +67,7 @@ jobs:
             mkdir -p build/android-evidence
             adb pull /sdcard/Android/data/cn.novelrelay.matcher/files/. build/android-evidence/
             adb pull /sdcard/Download/book01_小说匹配文件_AUTO_RC2.zip build/android-evidence/android-saved-download.zip
-            grep 'Android integration checks passed: 13' build/android/instrumentation.log
+            grep 'Android integration checks passed: 15' build/android/instrumentation.log
       - name: Publish unsigned output and evidence
         if: always()
         run: python3 tools/publish_build_evidence.py

@@ -1,0 +1,29 @@
+{
+  "source_commit": "574989ac43bfbb0701bfe45d075d635eab27b59e",
+  "files": [
+    {
+      "path": "apksigner.jar",
+      "bytes": 1074241,
+      "sha256": "00ef9948f843fe395d2440ae3ef41405b8040a6d5d46493bd1902ac0ee6deae7",
+      "blob": "cc94fc1ec4d982ffa5c0763316683b209299aaaa"
+    },
+    {
+      "path": "font-license.txt",
+      "bytes": 2618,
+      "sha256": "d183af7db6d782fe7009eeafef0cef67099ef50ef18dd81513de8004b0361cb7",
+      "blob": "be604aa3bdf08e1a2780eb5329cd471b1817e5c4"
+    },
+    {
+      "path": "manual-font.ttf",
+      "bytes": 176600,
+      "sha256": "d51f36af5ba9519f7aba57ddd94c59035e6d9c9e9cbdf39feda275f51e9d9d33",
+      "blob": "57dc782f45b1434318c6026f994c1451713e7e87"
+    },
+    {
+      "path": "unsigned.apk",
+      "bytes": 84076,
+      "sha256": "d7927c0742c6d71cf842b54082f06c7c01b12477cb18c0e40d322a0227df1ae6",
+      "blob": "dc174665ed01d3a3ee65e84ad1ce4ecf5abf11b7"
+    }
+  ]
+}

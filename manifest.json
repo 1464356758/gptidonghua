@@ -1,0 +1,47 @@
+{
+  "source_commit": "86427822e5d2703e67885f54b347b0742e224861",
+  "files": [
+    {
+      "path": "android-generated.zip",
+      "bytes": 206914,
+      "sha256": "a78a03d39bc33f85b4e80d95471bf152a7f2b4bfcd47ef4e9002933fced7e6ce",
+      "blob": "2ebcd906ebd3d95af056e2fe021aee2edfd9d381"
+    },
+    {
+      "path": "android-home.png",
+      "bytes": 51127,
+      "sha256": "85af97128b0ba13ed4342991b91f791a3550a5496b810cf6a4260d2104f6b6df",
+      "blob": "f776d85ae5045c9b63d77538609897963b85a11b"
+    },
+    {
+      "path": "android-save-picker.png",
+      "bytes": 157436,
+      "sha256": "4f58b8b0c9e1210ef920dc4b20b7bc51f0a336a7bedaa92c498cf80582b89062",
+      "blob": "3eaaadca722ea9a024488ea41241a95e22cab81a"
+    },
+    {
+      "path": "apksigner.jar",
+      "bytes": 1074241,
+      "sha256": "00ef9948f843fe395d2440ae3ef41405b8040a6d5d46493bd1902ac0ee6deae7",
+      "blob": "cc94fc1ec4d982ffa5c0763316683b209299aaaa"
+    },
+    {
+      "path": "font-license.txt",
+      "bytes": 2618,
+      "sha256": "d183af7db6d782fe7009eeafef0cef67099ef50ef18dd81513de8004b0361cb7",
+      "blob": "be604aa3bdf08e1a2780eb5329cd471b1817e5c4"
+    },
+    {
+      "path": "manual-font.ttf",
+      "bytes": 176600,
+      "sha256": "d51f36af5ba9519f7aba57ddd94c59035e6d9c9e9cbdf39feda275f51e9d9d33",
+      "blob": "57dc782f45b1434318c6026f994c1451713e7e87"
+    },
+    {
+      "path": "unsigned.apk",
+      "bytes": 84076,
+      "sha256": "4907d67373b9f699585593baeac1fa592ae598828abc8eeeff5ecaddaece6b8c",
+      "blob": "17d87f0fa147ed7b06b0a850b2a518decda6ac63"
+    }
+  ]
+}

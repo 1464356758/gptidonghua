@@ -1,0 +1,16 @@
+java.lang.AssertionError: rendered share chooser
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings Choose Bluetooth device null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings null null
+com.android.settings Available devices null
+com.android.settings null null
+com.android.settings null null

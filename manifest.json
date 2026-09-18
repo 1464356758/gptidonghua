@@ -1,0 +1,83 @@
+{
+  "source_commit": "08474a8b9eee172e15ca7ac61eb3df343c86f0a5",
+  "files": [
+    {
+      "path": "android-failure-ui.txt",
+      "bytes": 546,
+      "sha256": "176392b5401f6a6076469f3d73327ec85585e463c9de4802832563e80dfc54b4",
+      "blob": "5ecdeecdff11bfcd0fd4e4f30887e74b00d546fc"
+    },
+    {
+      "path": "android-failure.png",
+      "bytes": 35395,
+      "sha256": "7f3628d3f84a70ac5e0418dfcad9a34ac4c13b11ce85f54fb0431aa17e4d4323",
+      "blob": "cb62afe73ff1e5933a664e82d353fab4665919ae"
+    },
+    {
+      "path": "android-generated.zip",
+      "bytes": 206914,
+      "sha256": "88a9dba498f29047e0f420e527e5b38c6f4bde444aeda86a555e4a9a85b2c67b",
+      "blob": "53322382e628d94cf5577f6c8a43970c9a5e781d"
+    },
+    {
+      "path": "android-home.png",
+      "bytes": 185855,
+      "sha256": "65f02206a97e2fe567c9e7805b5734ebfe02b78df92e552c9b7da5aa6ffba857",
+      "blob": "77d8798009fa031c9b8680da5b96c57f10ad8678"
+    },
+    {
+      "path": "android-save-picker.png",
+      "bytes": 60943,
+      "sha256": "e9770591e985832cfe700d4a2da5f9cd24612ad06fae7aa90ebc4a891eeb0c38",
+      "blob": "e0f628cff5ed0b605873582a6319707d9e967aec"
+    },
+    {
+      "path": "android-saved-download.zip",
+      "bytes": 206914,
+      "sha256": "88a9dba498f29047e0f420e527e5b38c6f4bde444aeda86a555e4a9a85b2c67b",
+      "blob": "53322382e628d94cf5577f6c8a43970c9a5e781d"
+    },
+    {
+      "path": "apksigner.jar",
+      "bytes": 1074241,
+      "sha256": "00ef9948f843fe395d2440ae3ef41405b8040a6d5d46493bd1902ac0ee6deae7",
+      "blob": "cc94fc1ec4d982ffa5c0763316683b209299aaaa"
+    },
+    {
+      "path": "apksigner.part01.b64",
+      "bytes": 682668,
+      "sha256": "d94bfbe80559a9944441e1d53d1af5af71eda61bb31e0a36760e75a4ddc87a2b",
+      "blob": "f80111e79f5b53b0b298367aef6a17435a9904e1"
+    },
+    {
+      "path": "apksigner.part02.b64",
+      "bytes": 682668,
+      "sha256": "571ab5dd53546d6bac2794bff8cecf8426ecba55307b52282cb95fcd0e9ea6bf",
+      "blob": "974a3f646f5cc52675695686fc2d63cd4f7d4964"
+    },
+    {
+      "path": "apksigner.part03.b64",
+      "bytes": 66988,
+      "sha256": "767e546939b3b0a6d1afc8609222d670dc544e086e968de50718245b76a908b1",
+      "blob": "5df3cfe8b6b70805db2be6063432470dd5d9e265"
+    },
+    {
+      "path": "font-license.txt",
+      "bytes": 2618,
+      "sha256": "d183af7db6d782fe7009eeafef0cef67099ef50ef18dd81513de8004b0361cb7",
+      "blob": "be604aa3bdf08e1a2780eb5329cd471b1817e5c4"
+    },
+    {
+      "path": "manual-font.ttf",
+      "bytes": 176600,
+      "sha256": "d51f36af5ba9519f7aba57ddd94c59035e6d9c9e9cbdf39feda275f51e9d9d33",
+      "blob": "57dc782f45b1434318c6026f994c1451713e7e87"
+    },
+    {
+      "path": "unsigned.apk",
+      "bytes": 84096,
+      "sha256": "97077dbbdaa28cc1718f5ce6c1862ff6e627eb5862db65b56c50cd35a9c66c99",
+      "blob": "c708765d272f2e6223e2f5c5a50f7d82e045f7e9"
+    }
+  ]
+}

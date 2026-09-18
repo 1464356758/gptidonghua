@@ -1,0 +1,24 @@
+{
+  "android_version": "1.0.0-RC2",
+  "automation_version": "AUTO-0.2.0-RC2",
+  "certificate_sha256": "d9666a7b0e8ef248d97b6d9d3fe60ea4115e4c38a9ffb848738aadede57e8ff1",
+  "signature_schemes_verified": [
+    "v2",
+    "v3"
+  ],
+  "files": [
+    {
+      "filename": "小说匹配生成器_Android_1.0.0_RC2.apk",
+      "bytes": 94812,
+      "sha256": "a65bd20a64d7ead2dd3c2b0409560595148e5dedb1c6f4c0d9e86841f96ebc31"
+    },
+    {
+      "filename": "小说自动接力系统_整合说明书与操作教程_RC2.pdf",
+      "bytes": 163980,
+      "sha256": "a85743e0765c6d7b6d73261cb97d03726833b08affc1eff4b9d934b30f8080b4"
+    }
+  ],
+  "android_build_source_commit": "4e2ed988929210e8ee4a9d47f0a9cde4256f3933",
+  "android_verification_run": "https://github.com/1464356758/gptidonghua/actions/runs/35389685573",
+  "tested_unsigned_apk_sha256": "7624dedfe52d291132666ef145eb06bc53074e483801e17f15b466337f8c15b0"
+}

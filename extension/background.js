@@ -1,6 +1,6 @@
 import {GitHub} from './core/github.mjs';
 import {Runner} from './core/runner.mjs';
-import {CONTROL_PATH,repoName,assert,uid,chatURL,copy} from './core/protocol.mjs';
+import {CONTROL_PATH,repoName,assert,uid,chatURL,copy,ROLES} from './core/protocol.mjs';
 import {addBook,selectIdea,event,activeCount} from './core/engine.mjs';
 import {generate} from './core/generator.mjs';
 

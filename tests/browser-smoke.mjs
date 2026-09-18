@@ -33,7 +33,7 @@ try{
    const dash=await browser.newPage({viewport:{width:1440,height:1050}});
    const errors=[];dash.on('pageerror',e=>errors.push(e.message));
    await dash.addInitScript(()=>{window.chrome={runtime:{sendMessage:async()=>({ok:true,value:{hasToken:false,lastState:{paused:true,pause_reason:'尚未启动',books:[],jobs:{},events:[]}}})}};});
-   await dash.goto(origin+'/extension/dashboard.html');await dash.waitForSelector('#chatFields input');assert.equal(await dash.locator('#chatFields input').count(),10);assert.deepEqual(errors,[]);checks++;
+   await dash.goto(origin+'/extension/dashboard.html');await dash.locator('summary').filter({hasText:'②'}).click();await dash.waitForSelector('#chatFields input');assert.equal(await dash.locator('#chatFields input').count(),10);assert.deepEqual(errors,[]);checks++;
    await dash.screenshot({path:'test-results/dashboard.png',fullPage:true});
    const mobile=await browser.newPage({viewport:{width:390,height:844},acceptDownloads:true});await mobile.goto(origin+'/portable/手机匹配文件生成器.html');
    await mobile.locator('#repo').fill('https://github.com/example/novel');const download=mobile.waitForEvent('download');await mobile.locator('#generate').click();const f=await download;await f.saveAs('test-results/browser-generated.zip');assert((await fs.stat('test-results/browser-generated.zip')).size>10000);checks++;

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小说接力控制台</title><link rel="stylesheet" href="dashboard.css"></head>
+<body><header><div class="brand">小说接力<span>RC1 · 待真实账号验收</span></div><p>三个故事，独立推进。每一次交接，都有据可查。</p></header>
+<main><div id="notice" role="status" aria-live="polite">连接 GitHub 后开始配置。</div>
+<section class="overview"><article><small>执行席位</small><strong id="slots">0 <em>/ 6</em></strong></article><article><small>管理中的小说</small><strong id="booksCount">0 <em>/ 3</em></strong></article><article><small>调度状态</small><strong id="status">未连接</strong></article><article><small>最近同步</small><strong id="synced">—</strong></article></section>
+<div class="toolbar"><button id="resume">开始 / 继续接力</button><button id="pause" class="secondary">暂停新任务</button><button id="sync" class="secondary">立即核对 GitHub</button><span id="pauseReason"></span></div>
+<section id="books" class="books"></section>
+<details open><summary>① 连接控制仓库</summary><div class="fields"><label>控制仓库<input id="controlRepo" value="1464356758/gptidonghua" autocomplete="off"></label><label>分支<input id="controlBranch" value="main"></label><label class="wide">GitHub Fine-grained token<input id="token" type="password" placeholder="仅保留到本次浏览器会话结束" autocomplete="off"></label></div><div class="actions"><button id="connect">连接 GitHub</button><button id="logout" class="secondary">暂停并移除令牌</button></div><p class="hint">令牌用于控制台访问 GitHub，不能代替 ChatGPT 内的 GitHub连接。权限与首次设置见交付包中文教程。</p></details>
+<details><summary>② 生成匹配文件 / 登记一本小说</summary>
+<div class="fields"><label>独立书号<input id="bookId" value="book01"></label><label>项目名<input id="title" value="第一部小说"></label>
+<label>小说平台<select id="platform"><option>番茄小说</option><option>七猫小说</option><option>起点中文网</option><option>豆瓣阅读</option></select></label><label>小说仓库根地址<input id="repo" placeholder="https://github.com/1464356758/你的小说仓库"></label><label>分支<input id="branch" value="main"></label>
+<label>起始章<input id="start" type="number" min="1" value="1"></label><label>最后章<input id="end" type="number" min="1" value="100"></label><label>每章最少字数<input id="min" type="number" min="1" value="8000"></label><label>每章最多字数<input id="max" type="number" min="1" value="10000"></label>
+<label class="wide">本书灵感关键词<textarea id="keywords" rows="2" placeholder="例如：县城、悬疑、失踪的旧车站；最终选题由你决定"></textarea></label></div>
+<div class="actions"><button id="generate">生成匹配 ZIP</button><button id="share" class="secondary">分享匹配 ZIP</button><button id="initialize" class="secondary">初始化这本小说的空仓库</button></div>
+<p class="hint">学院固定为 1464356758/xueyuan。生成器适配新学院四平台入口，保留原十角色与五套CI。原APK文件保持原样；这里生成的是自动化派生包。</p>
+<h3>绑定本书十个普通聊天</h3><p class="hint">先在ChatGPT中创建普通聊天、选好模型并连接GitHub，然后填入各自完整对话地址。三本书合计30个独立对话。运行时每个对话只保留一个标签页。</p><div id="chatFields" class="fields"></div>
+<div class="actions"><button id="add">登记这本小说</button><button id="bind" class="secondary">更新已登记书号的对话绑定</button></div></details>
+<details><summary>③ 在途任务与异常恢复</summary><p class="hint">已创建文件不等于完成。发送结果不明的任务不会自动重发；关闭网页也不会自动腾出席位。先核对GitHub及原对话，再处理异常。</p><div class="tablewrap"><table><thead><tr><th>小说 / 角色</th><th>任务状态</th><th>席位</th><th>待处理事项</th></tr></thead><tbody id="jobs"></tbody></table></div></details>
+<details><summary>运行记录</summary><ol id="events"></ol></details>
+<footer>电脑及浏览器需保持运行。遇限额、登录或验证码会暂停。此版本不调用OpenAI API，也不承诺Plus额度、后台真实推理并发或全天无人值守。</footer>
+</main><script type="module" src="dashboard.js"></script></body></html>

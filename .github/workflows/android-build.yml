@@ -63,9 +63,9 @@ jobs:
             adb install build/android/ci-test.apk
             adb shell am instrument -w cn.novelrelay.matcher.test/cn.novelrelay.matcher.Checks > build/android/instrumentation.log
             cat build/android/instrumentation.log
-            grep 'Android integration checks passed: 10' build/android/instrumentation.log
             mkdir -p build/android-evidence
             adb pull /sdcard/Android/data/cn.novelrelay.matcher/files/. build/android-evidence/
+            grep 'Android integration checks passed: 10' build/android/instrumentation.log
       - name: Publish unsigned output and evidence
         if: always()
         run: python3 tools/publish_build_evidence.py

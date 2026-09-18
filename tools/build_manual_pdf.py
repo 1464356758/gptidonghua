@@ -61,7 +61,7 @@ while i<len(lines):
   cells=[[p(c,'head' if j==0 else 'cell') for c in row] for j,row in enumerate(rows)]
   t=Table(cells,colWidths=widths,repeatRows=1,hAlign='LEFT');t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),INK),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#F5F8F3')]),('GRID',(0,0),(-1,-1),.4,LINE),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),9),('RIGHTPADDING',(0,0),(-1,-1),9),('TOPPADDING',(0,0),(-1,-1),9),('BOTTOMPADDING',(0,0),(-1,-1),9)]));story.extend([t,Spacer(1,14)]);continue
  if line.startswith('> '):story.append(p(line[2:],'quote'))
- elif line.startswith('- '):story.append(p('• '+line[2:]))
+ elif line.startswith('- '):story.append(p('- '+line[2:]))
  else:story.append(p(line))
  i+=1
 out=R/'output/pdf';out.mkdir(parents=True,exist_ok=True)

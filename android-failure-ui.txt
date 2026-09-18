@@ -1,0 +1,9 @@
+java.lang.AssertionError: external app received exact ZIP through read grant
+cn.novelrelay.matcher.test null null
+cn.novelrelay.matcher.test null null
+cn.novelrelay.matcher.test null null
+cn.novelrelay.matcher.test Share received: c2b0adb3cc9862a8ccf2f57c27162617e607e12da680332c1546d05d412ad032
+Bytes: 206914
+Receiver UID: 10142 null
+cn.novelrelay.matcher.test null null
+cn.novelrelay.matcher.test null null

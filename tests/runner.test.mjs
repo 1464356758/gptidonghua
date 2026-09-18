@@ -76,3 +76,11 @@ test('暂停期间未发送的预留任务，过夜不会被当成执行超时�
   const s=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);for(const j of Object.values(s.jobs))j.reserved_at=Date.now()-86400000;
   f.api.commit('owner/control',{[CONTROL_PATH]:encode(s)});await f.make().tick();const after=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);assert.equal(after.books[0].held,null);assert.equal(activeCount(after),3);
 });
+test('Runner使用自定义学堂和独立分支发布任务',async()=>{
+ const f=await setup('IDEA',1),state=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);Object.assign(state.books[0].config,{academy_repo:'mirror/rules',academy_branch:'rules/stable'});f.api.commit('owner/control',{[CONTROL_PATH]:encode(state)});
+ const db=JSON.parse(f.api.files['owner/book1']['数据库入口.json']);Object.assign(db,{academy_repo:'https://github.com/mirror/rules',academy_branch:'rules/stable'});f.api.commit('owner/book1',{...f.api.files['owner/book1'],'数据库入口.json':encode(db)});
+ await f.make().tick();assert.equal(f.sent.length,1);const job=Object.entries(f.api.files['owner/book1']).find(([p])=>p.startsWith('自动化/任务/'));assert.equal(JSON.parse(job[1]).config.academy_branch,'rules/stable');
+});
+test('只改控制台而未同步小说的学堂分支时禁止发送',async()=>{
+ const f=await setup('IDEA',1),state=JSON.parse(f.api.files['owner/control'][CONTROL_PATH]);state.books[0].config.academy_branch='rules/new';f.api.commit('owner/control',{[CONTROL_PATH]:encode(state)});await f.make().tick();assert.equal(f.sent.length,0);assert(JSON.parse(f.api.files['owner/control'][CONTROL_PATH]).books[0].held.includes('学堂'));
+});

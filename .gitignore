@@ -9,3 +9,6 @@ build/
 *.jks
 *.keystore
 *.p12
+
+output/
+tmp/

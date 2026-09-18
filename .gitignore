@@ -4,3 +4,8 @@ dist/
 __pycache__/
 .env*
 test-results/
+
+build/
+*.jks
+*.keystore
+*.p12

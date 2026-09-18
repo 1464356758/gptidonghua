@@ -1,4 +1,5 @@
-export const VERSION = 'AUTO-0.1.0-RC1';
+export const VERSION = 'AUTO-0.2.0-RC2';
+export const SUPPORTED_PROTOCOLS = [VERSION,'AUTO-0.1.0-RC1'];
 export const ACADEMY = '1464356758/xueyuan';
 export const CONTROL_PATH = '自动化控制/控制台.json';
 export const ROLES = {
@@ -31,11 +32,16 @@ export function chatURL(value) {
 export function validateBook(b, requireChats = true) {
   assert(/^[a-zA-Z0-9_-]{1,40}$/.test(b.id), '书号只能包含英文、数字、下划线和连字符');
   b.repo = repoName(b.repo);
+  b.academy_repo = repoName(b.academy_repo ?? ACADEMY);
+  b.academy_branch = b.academy_branch ?? 'main';
+  assert(b.academy_repo !== b.repo, '小说仓库与学堂仓库必须分开');
+  assert(typeof b.academy_branch === 'string' && b.academy_branch.length > 0 && !/[\s~^:?*\[\\]/.test(b.academy_branch) && !b.academy_branch.includes('..') && !b.academy_branch.includes('@{') && !b.academy_branch.endsWith('/') && !b.academy_branch.endsWith('.') && b.academy_branch !== '@' && !b.academy_branch.split('/').some(x => !x || x.startsWith('.') || x.endsWith('.lock')), '学堂分支名称不合法');
   assert(typeof b.branch === 'string' && b.branch.length > 0 && !/[\s~^:?*\[\\]/.test(b.branch) && !b.branch.includes('..') && !b.branch.includes('@{') && !b.branch.endsWith('/') && !b.branch.endsWith('.') && b.branch !== '@' && !b.branch.split('/').some(x => !x || x.startsWith('.') || x.endsWith('.lock')), '分支名称不合法');
   assert(PLATFORMS[b.platform], '请选择番茄、七猫、起点或豆瓣阅读');
   for (const k of ['start','end','min','max']) assert(Number.isSafeInteger(b[k]) && b[k] > 0, k+'必须为正整数');
   assert(b.end >= b.start && b.end <= 9999 && b.max >= b.min && b.max <= 100000, '章节或字数范围不合法');
-  assert(typeof b.title === 'string' && b.title.trim().length > 0, '请填写书名或项目名');
+  assert(typeof b.title === 'string' && b.title.trim().length > 0 && b.title.length<=120, '请填写120字以内的书名或项目名');
+  assert(b.keywords===undefined || (typeof b.keywords==='string' && b.keywords.length<=8000), '灵感关键词必须为8000字以内的文字');
   if (requireChats) {
     const urls = Object.keys(ROLES).map(r => b.chats[r] = chatURL(b.chats[r]));
     assert(new Set(urls).size === 10, '同一本书的十个角色必须绑定十个不同对话');

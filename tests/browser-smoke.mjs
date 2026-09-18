@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import http from 'node:http';
+import {importMatchingBytes} from '../extension/core/matching.mjs';
 const root=path.resolve('.');await fs.mkdir('test-results',{recursive:true});
 const browser=await chromium.launch({headless:true});
 let checks=0;
@@ -36,8 +37,15 @@ try{
    await dash.goto(origin+'/extension/dashboard.html');await dash.locator('summary').filter({hasText:'②'}).click();await dash.waitForSelector('#chatFields input');assert.equal(await dash.locator('#chatFields input').count(),10);assert.deepEqual(errors,[]);checks++;
    await dash.screenshot({path:'test-results/dashboard.png',fullPage:true});
    const mobile=await browser.newPage({viewport:{width:390,height:844},acceptDownloads:true});await mobile.goto(origin+'/portable/手机匹配文件生成器.html');
-   await mobile.locator('#repo').fill('https://github.com/example/novel');const download=mobile.waitForEvent('download');await mobile.locator('#generate').click();const f=await download;await f.saveAs('test-results/browser-generated.zip');assert((await fs.stat('test-results/browser-generated.zip')).size>10000);checks++;
+   await mobile.locator('#repo').fill('https://github.com/example/novel');await mobile.locator('#academy_repo').fill('https://github.com/example/new-rules');await mobile.locator('#academy_branch').fill('rules/stable');const download=mobile.waitForEvent('download');await mobile.locator('#generate').click();const f=await download;await f.saveAs('test-results/browser-generated.zip');assert((await fs.stat('test-results/browser-generated.zip')).size>10000);checks++;
+   const imported=importMatchingBytes(await fs.readFile('test-results/browser-generated.zip'),'phone.zip');assert.equal(imported.academy_repo,'example/new-rules');assert.equal(imported.academy_branch,'rules/stable');checks++;
+   await dash.locator('#importConfig').setInputFiles('test-results/browser-generated.zip');await dash.waitForFunction(()=>document.querySelector('#academyRepo').value==='example/new-rules');assert.equal(await dash.locator('#academyBranch').inputValue(),'rules/stable');checks++;
+   await mobile.locator('[data-slot="1"]').click();assert.equal(await mobile.locator('#id').inputValue(),'book02');assert.equal(await mobile.locator('#repo').inputValue(),'');await mobile.locator('[data-slot="0"]').click();assert.equal(await mobile.locator('#academy_repo').inputValue(),'https://github.com/example/new-rules');await mobile.reload();assert.equal(await mobile.locator('#repo').inputValue(),'https://github.com/example/novel');checks++;
    await mobile.screenshot({path:'test-results/mobile-generator.png',fullPage:true});
+   const native=await browser.newPage({viewport:{width:390,height:844}});await native.addInitScript(()=>{window.NativeRelay={exportZip:(name,data,mode)=>{window.bridgeResult={name,data,mode};},openGithub:()=>{}};});await native.goto(origin+'/portable/手机匹配文件生成器.html');await native.locator('#repo').fill('o/r');await native.locator('#share').click();await native.waitForFunction(()=>window.bridgeResult);const bridge=await native.evaluate(()=>window.bridgeResult);assert.equal(bridge.mode,'share');assert(importMatchingBytes(Buffer.from(bridge.data,'base64'),bridge.name));checks++;
+   await native.evaluate(()=>window.nativeFeedback('已保存'));assert.equal(await native.locator('#generate').isEnabled(),true);checks++;
+   await mobile.goto(origin+'/portable/整合系统说明书与操作教程.html');assert.equal(await mobile.locator('h2').count(),15);checks++;
+
  }finally{await new Promise(r=>server.close(r));}
  console.log(`Browser fixture checks passed: ${checks}; no live ChatGPT account tested.`);
 }finally{await browser.close();}

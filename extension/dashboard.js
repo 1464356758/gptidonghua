@@ -1,14 +1,15 @@
 import {ROLES,repoName} from './core/protocol.mjs';
 import {zip} from './core/zip.mjs';
+import {importMatchingBytes} from './core/matching.mjs';
 const $=id=>document.getElementById(id);
 const node=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
 function notice(text){$('notice').textContent=text;}
 async function rpc(type,body={}){const r=await chrome.runtime.sendMessage({type,...body});if(!r?.ok)throw new Error(r?.error||'控制台暂未响应');return r.value;}
 async function act(fn){document.querySelectorAll('button').forEach(b=>b.disabled=true);try{await fn();await refresh();}catch(e){notice(e.message);}finally{document.querySelectorAll('button').forEach(b=>b.disabled=false);}}
 for(const [key,name] of Object.entries(ROLES)){const label=node('label',name.replace('_',' ')),input=node('input');input.id='chat-'+key;input.placeholder='https://chatgpt.com/c/…';label.append(input);$('chatFields').append(label);}
-function config(){return {id:$('bookId').value.trim(),title:$('title').value.trim(),platform:$('platform').value,repo:repoName($('repo').value),branch:$('branch').value.trim(),start:+$('start').value,end:+$('end').value,min:+$('min').value,max:+$('max').value,keywords:$('keywords').value.trim(),chats:Object.fromEntries(Object.keys(ROLES).map(k=>[k,$('chat-'+k).value.trim()]))};}
+function config(){return {id:$('bookId').value.trim(),title:$('title').value.trim(),platform:$('platform').value,repo:repoName($('repo').value),branch:$('branch').value.trim(),academy_repo:$('academyRepo').value.trim(),academy_branch:$('academyBranch').value.trim(),start:+$('start').value,end:+$('end').value,min:+$('min').value,max:+$('max').value,keywords:$('keywords').value.trim(),chats:Object.fromEntries(Object.keys(ROLES).map(k=>[k,$('chat-'+k).value.trim()]))};}
 function saveBlob(blob,name){const u=URL.createObjectURL(blob),a=node('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000);}
-async function generateFile(){const c=config(),r=await rpc('generate',{config:c});return new File([zip(r.files)],`${c.id}_小说匹配文件_AUTO_RC1.zip`,{type:'application/zip'});}
+async function generateFile(){const c=config(),r=await rpc('generate',{config:c});return new File([zip(r.files)],`${c.id}_小说匹配文件_AUTO_RC2.zip`,{type:'application/zip'});}
 $('generate').onclick=()=>act(async()=>{const f=await generateFile();saveBlob(f,f.name);notice('匹配文件已生成。包含新学院入口及自动化协议。');});
 $('share').onclick=()=>act(async()=>{const f=await generateFile();if(navigator.canShare?.({files:[f]}))await navigator.share({files:[f],title:f.name});else{saveBlob(f,f.name);notice('此浏览器不支持直接分享，已下载ZIP。');}});
 $('connect').onclick=()=>act(async()=>{await rpc('connect',{repo:$('controlRepo').value,branch:$('controlBranch').value,token:$('token').value});$('token').value='';notice('GitHub已连接。先初始化小说仓库、登记对话，再开始。');});
@@ -48,3 +49,14 @@ async function refresh(){
   $('events').replaceChildren();for(const e of [...(s?.events||[])].reverse())$('events').append(node('li',new Date(e.at).toLocaleString()+' '+e.text));
 }
 refresh().catch(e=>notice(e.message));setInterval(()=>refresh().catch(()=>{}),5000);
+
+$('importConfig').onchange=()=>act(async()=>{
+ const f=$('importConfig').files[0];if(!f)return;if(f.size>8*1024*1024)throw new Error('导入文件超过8MB');
+ const c=importMatchingBytes(new Uint8Array(await f.arrayBuffer()),f.name);
+ const map={id:'bookId',academy_repo:'academyRepo',academy_branch:'academyBranch'};
+ for(const [k,v] of Object.entries(c))$(map[k]||k).value=v;
+ for(const r of Object.keys(ROLES))$('chat-'+r).value='';
+ notice('项目参数已导入，十角色绑定已清空。请检查小说仓库、学堂与分支；本操作尚未写入GitHub或登记小说。');
+ $('importConfig').value='';
+});
+$('checkAcademy').onclick=()=>act(async()=>{const r=await rpc('check_academy',{config:config()});notice(`学堂与平台入口可读。学堂固定提交：${r.commit}。正式创作仍须按角色规则核对资料和有效期。`);});

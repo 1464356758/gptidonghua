@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cn.novelrelay.matcher" android:versionCode="10000" android:versionName="1.0.0-RC2">
+  <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="35"/>
+  <application android:label="小说匹配生成器" android:theme="@style/AppTheme" android:icon="@drawable/ic_launcher" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
+    <activity android:name=".MainActivity" android:exported="true" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize|keyboardHidden">
+      <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+    </activity>
+    <provider android:name=".ZipProvider" android:authorities="cn.novelrelay.matcher.files" android:exported="false" android:grantUriPermissions="true"/>
+  </application>
+</manifest>

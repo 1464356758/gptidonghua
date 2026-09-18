@@ -15,3 +15,27 @@ export function zip(files){
   const cd=concat(central),[end,v]=header(22);v.setUint32(0,0x06054b50,true);v.setUint16(8,Object.keys(files).length,true);v.setUint16(10,Object.keys(files).length,true);v.setUint32(12,cd.length,true);v.setUint32(16,offset,true);
   return concat([...parts,cd,end]);
 }
+
+// 只读取本生成器产出的STORE ZIP。遇重新压缩的ZIP，用户可解压后导入JSON。
+export function readStoredZipEntry(bytes,target){
+  const a=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes),v=new DataView(a.buffer,a.byteOffset,a.byteLength);
+  const fail=()=>{throw new Error('匹配ZIP损坏或已被重新压缩；请解压后选择自动化/控制台导入.json');};
+  if(a.length<22||a.length>8*1024*1024)fail();
+  const end=a.length-22;
+  if(v.getUint32(end,true)!==0x06054b50||v.getUint16(end+4,true)||v.getUint16(end+6,true)||v.getUint16(end+20,true))fail();
+  const count=v.getUint16(end+10,true),size=v.getUint32(end+12,true),start=v.getUint32(end+16,true);
+  if(count!==v.getUint16(end+8,true)||start+size!==end)fail();
+  let p=start,result=null;const names=new Set(),decoder=new TextDecoder('utf-8',{fatal:true});
+  for(let i=0;i<count;i++){
+    if(p+46>end||v.getUint32(p,true)!==0x02014b50)fail();
+    const flags=v.getUint16(p+8,true),method=v.getUint16(p+10,true),crc=v.getUint32(p+16,true),compressed=v.getUint32(p+20,true),length=v.getUint32(p+24,true),n=v.getUint16(p+28,true),extra=v.getUint16(p+30,true),comment=v.getUint16(p+32,true),local=v.getUint32(p+42,true);
+    if(p+46+n+extra+comment>end||flags!==0x800||method!==0||compressed!==length||local+30>start)fail();
+    const name=decoder.decode(a.subarray(p+46,p+46+n));if(names.has(name))fail();names.add(name);
+    if(v.getUint32(local,true)!==0x04034b50||v.getUint16(local+6,true)!==flags||v.getUint16(local+8,true)!==method||v.getUint32(local+14,true)!==crc||v.getUint32(local+18,true)!==length||v.getUint32(local+22,true)!==length)fail();
+    const ln=v.getUint16(local+26,true),le=v.getUint16(local+28,true),dataStart=local+30+ln+le;
+    if(dataStart+length>start||decoder.decode(a.subarray(local+30,local+30+ln))!==name)fail();
+    if(name===target){if(length>65536)fail();const data=a.subarray(dataStart,dataStart+length);if(crc32(data)!==crc)fail();result=decoder.decode(data);}
+    p+=46+n+extra+comment;
+  }
+  if(p!==end||result===null)fail();return result;
+}

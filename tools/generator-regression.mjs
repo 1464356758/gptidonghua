@@ -10,7 +10,7 @@ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'novel-regression-'));
 try{
   for(const [i,platform] of ['番茄小说','七猫小说','起点中文网','豆瓣阅读'].entries()){
     const root=path.join(dir,'case'+i);await fs.mkdir(root);
-    const files=await generate(base,{id:`book${i}`,title:'回归样本',repo:`sample/book${i}`,branch:i?'feature/test':'main',platform,start:i?11:1,end:i?88:100,min:i?7000:8000,max:i?9000:10000},protocol);
+    const files=await generate(base,{id:`book${i}`,title:'回归样本',repo:`sample/book${i}`,branch:i?'feature/test':'main',platform,academy_repo:'mirror-owner/rules',academy_branch:'rules/stable',start:i?11:1,end:i?88:100,min:i?7000:8000,max:i?9000:10000},protocol);
     for(const [p,t] of Object.entries(files)){await fs.mkdir(path.dirname(path.join(root,p)),{recursive:true});await fs.writeFile(path.join(root,p),t);}
     await fs.writeFile(path.join(root,'generated.zip'),zip(files));
     for(const script of ['validate.py','validate_contracts.py','validate_scoreboard.py','validate_stage.py','validate_stage_strict.py']){

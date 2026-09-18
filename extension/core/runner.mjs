@@ -1,4 +1,4 @@
-import {CONTROL_PATH,ACADEMY,encode,sha256,taskPath,promptFor,ROLES,copy,assert,VERSION} from './protocol.mjs';
+import {CONTROL_PATH,ACADEMY,encode,sha256,taskPath,promptFor,ROLES,copy,assert,VERSION,SUPPORTED_PROTOCOLS} from './protocol.mjs';
 import {newControl,takeLease,event,group,readyGroups,reserve,activeCount,markAccepted,collect,advanceNonDirector,applyDirectorRoute,releaseSlot} from './engine.mjs';
 import {verifyReceipt,Pending} from './audit.mjs';
 
@@ -107,9 +107,9 @@ export class Runner {
     const head=await this.api.head(b.config.repo,b.config.branch);
     const state=await this.api.read(b.config.repo,'运行状态.json',head);
     const db=(await this.api.json(b.config.repo,'数据库入口.json',head)).value;
-    assert(db.repo_url===`https://github.com/${b.config.repo}`&&db.branch===b.config.branch&&db.platform===b.config.platform&&db.academy_repo===`https://github.com/${ACADEMY}`,'小说配置未初始化或与控制台不一致');
+    assert(db.repo_url===`https://github.com/${b.config.repo}`&&db.branch===b.config.branch&&db.platform===b.config.platform&&db.academy_repo===`https://github.com/${b.config.academy_repo??ACADEMY}`&&(db.academy_branch??'main')===(b.config.academy_branch??'main'),'小说配置未初始化或与控制台不一致（包括学堂及分支）');
     assert(db.chapter_range.start===b.config.start&&db.chapter_range.end===b.config.end&&db.chapter_words.min===b.config.min&&db.chapter_words.max===b.config.max,'小说章节/字数配置不一致');
-    const protocol=await this.api.read(b.config.repo,'自动化/角色执行协议.md',head);assert(protocol.text.includes(VERSION),'缺当前自动化执行协议');
+    const protocol=await this.api.read(b.config.repo,'自动化/角色执行协议.md',head);assert(SUPPORTED_PROTOCOLS.some(v=>protocol.text.includes(v)),'缺兼容的自动化执行协议');
     const files={};
     for(const j of js){
       j.input_commit=head;j.state_sha256=await sha256(state.text);

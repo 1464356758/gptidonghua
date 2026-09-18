@@ -17,5 +17,5 @@ for(const platform of ['番茄小说','七猫小说','起点中文网','豆瓣�
   }
   const a=zip(files);assert.equal(new DataView(a.buffer).getUint32(0,true),0x04034b50);
 });
-test('生成派生包不冒用原APP最终锁定声明',async()=>{const files=await generate(base,{id:'b',title:'测试',repo:'o/r',branch:'main',platform:'番茄小说',start:1,end:2,min:1,max:9},protocol);assert(!files['系统锁定/SYSTEM-LOCK-V4.3-FINAL.json']);assert.equal(JSON.parse(files['生成清单.json']).release,'RC1');});
+test('生成派生包不冒用原APP最终锁定声明',async()=>{const files=await generate(base,{id:'b',title:'测试',repo:'o/r',branch:'main',platform:'番茄小说',start:1,end:2,min:1,max:9},protocol);assert(!files['系统锁定/SYSTEM-LOCK-V4.3-FINAL.json']);assert.equal(JSON.parse(files['生成清单.json']).release,'RC2');});
 test('无效平台、倒置范围在生成前拒绝',async()=>{const c={id:'b',title:'t',repo:'o/r',branch:'main',platform:'自动全平台',start:10,end:2,min:3,max:2};await assert.rejects(generate(base,c,protocol));});

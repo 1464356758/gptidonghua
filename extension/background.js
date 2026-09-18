@@ -1,6 +1,6 @@
 import {GitHub} from './core/github.mjs';
 import {Runner} from './core/runner.mjs';
-import {CONTROL_PATH,repoName,assert,uid,chatURL,copy,ROLES} from './core/protocol.mjs';
+import {CONTROL_PATH,repoName,assert,uid,chatURL,copy,ROLES,validateBook,PLATFORMS} from './core/protocol.mjs';
 import {addBook,selectIdea,event,activeCount} from './core/engine.mjs';
 import {generate} from './core/generator.mjs';
 
@@ -58,7 +58,16 @@ async function command(m){
     await chrome.storage.session.remove('token');return {ok:true};
   }
   if(m.type==='generate'){const a=await assets();return {files:await generate(a.base,m.config,a.protocol)};}
+  if(m.type==='check_academy'){
+    const c=validateBook(copy(m.config),false),r=await runner(),commit=await r.api.head(c.academy_repo,c.academy_branch);
+    const root=(await r.api.json(c.academy_repo,'学院入口.json',commit)).value;
+    const entry=`平台/${c.platform}/入口.json`;
+    assert(root.platforms?.[PLATFORMS[c.platform]]?.entry===entry,'新学堂目录结构不兼容：缺少所选平台入口');
+    await r.api.json(c.academy_repo,'自动选题入口.json',commit);await r.api.json(c.academy_repo,entry,commit);
+    return {commit};
+  }
   if(m.type==='initialize'){
+    m.config=validateBook(copy(m.config),false);
     const r=await runner();await r.load();await r.claim();
     assert(repoName(m.config.repo)!==r.settings.repo,'小说需使用独立仓库，不能覆盖控制台源码仓库');
     const a=await assets(),files=await generate(a.base,m.config,a.protocol),head=await r.api.head(m.config.repo,m.config.branch);
